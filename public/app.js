@@ -23,6 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const lastMeal = document.getElementById('lastMeal').value;
         const time = document.getElementById('time').value;
         const mood = document.getElementById('mood').value;
+        const dietPreference = document.getElementById('dietPreference').value;
+        const activityLevel = document.getElementById('activityLevel').value;
 
         // UI Loading State
         btnText.classList.add('hidden');
@@ -35,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ goal, lastMeal, time, mood })
+                body: JSON.stringify({ goal, lastMeal, time, mood, dietPreference, activityLevel })
             });
 
             if (!response.ok) {

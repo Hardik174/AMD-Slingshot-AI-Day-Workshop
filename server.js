@@ -21,24 +21,24 @@ const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
 // Calculate Health Score based on logic rules
 function calculateHealthScore(lastMeal, time) {
-    let score = 10;
+    let score = 7;
     const lowerMeal = lastMeal.toLowerCase();
     const lowerTime = time.toLowerCase();
 
     // -2 if junk food
-    const junkKeywords = ['pizza', 'burger', 'fries', 'chips', 'soda', 'candy', 'cake', 'ice cream', 'fast food'];
+    const junkKeywords = ['pizza', 'burger', 'fries', 'chips', 'soda', 'candy', 'cake', 'ice cream', 'fast food', 'samosa', 'vada pav', 'kachori', 'chole bhature', 'jalebi', 'pakora', 'bhujia', 'gulab jamun'];
     if (junkKeywords.some(keyword => lowerMeal.includes(keyword))) {
         score -= 2;
     }
 
     // -2 if late night
-    const lateNightKeywords = ['late night', 'midnight', '11pm', '12am', '1am', '2am', 'late'];
+    const lateNightKeywords = ['late night', 'midnight', '11pm', '12am', '1am', '2am', 'late', '11 pm', '12 am', '1 am'];
     if (lateNightKeywords.some(keyword => lowerTime.includes(keyword))) {
         score -= 2;
     }
 
-    // +2 if balanced (capped at 10)
-    const healthyKeywords = ['salad', 'salmon', 'chicken breast', 'vegetables', 'water', 'balanced', 'fruit'];
+    // +2 if balanced
+    const healthyKeywords = ['salad', 'salmon', 'chicken breast', 'vegetables', 'water', 'balanced', 'fruit', 'dal', 'paneer', 'khichdi', 'sprouts', 'roti', 'palak', 'millets', 'oats'];
     if (healthyKeywords.some(keyword => lowerMeal.includes(keyword))) {
         score += 2;
     }
@@ -47,19 +47,24 @@ function calculateHealthScore(lastMeal, time) {
 }
 
 // Generate Behavior Insight based on rules
-function generateBehaviorInsight(goal, lastMeal, time, mood) {
+function generateBehaviorInsight(goal, lastMeal, time, mood, activityLevel) {
     let insight = [];
     const lowerGoal = goal.toLowerCase();
     const lowerMeal = lastMeal.toLowerCase();
     const lowerTime = time.toLowerCase();
     const lowerMood = mood ? mood.toLowerCase() : '';
+    const lowerActivity = activityLevel ? activityLevel.toLowerCase() : '';
 
     if (lowerTime.includes('late')) {
         insight.push("Late night eating detected. Recommend digestable, light food.");
     }
 
-    if (lowerMeal.includes('pizza') || lowerMeal.includes('burger') || lowerMeal.includes('pasta') || lowerMeal.includes('bread') || lowerMeal.includes('rice')) {
-        insight.push("User consumed high carbs recently. Emphasize protein and fiber.");
+    if (lowerMeal.includes('pizza') || lowerMeal.includes('burger') || lowerMeal.includes('pasta') || lowerMeal.includes('bread') || lowerMeal.includes('rice') || lowerMeal.includes('samosa') || lowerMeal.includes('bhature')) {
+        if (lowerActivity.includes('active') || lowerActivity.includes('athlete')) {
+            insight.push("High carb intake detected, but acceptable given high activity level. Suggest balanced protein for recovery.");
+        } else {
+            insight.push("User consumed high carbs recently. Emphasize protein and fiber.");
+        }
     } else if (lowerMeal.includes('skip') || lowerMeal.includes('nothing')) {
         insight.push("User skipped a meal. Suggest a balanced recovery meal without overcompensating.");
     }
@@ -77,7 +82,7 @@ function generateBehaviorInsight(goal, lastMeal, time, mood) {
 
 app.post('/api/coach', async (req, res) => {
     try {
-        const { goal, lastMeal, time, mood } = req.body;
+        const { goal, lastMeal, time, mood, dietPreference, activityLevel } = req.body;
 
         if (!goal || !lastMeal || !time) {
             return res.status(400).json({ error: "Goal, last meal, and time are required." });
@@ -85,13 +90,15 @@ app.post('/api/coach', async (req, res) => {
 
         // --- SMART LOGIC LAYER ---
         const healthScore = calculateHealthScore(lastMeal, time);
-        const behaviorInsight = generateBehaviorInsight(goal, lastMeal, time, mood);
+        const behaviorInsight = generateBehaviorInsight(goal, lastMeal, time, mood, activityLevel);
 
         // --- AI LAYER ---
-        const prompt = `You are a smart nutrition assistant.
+        const prompt = `You are a smart nutrition assistant who specializes in Indian health and nutrition.
 
 User context:
 - Goal: ${goal}
+- Dietary Preference: ${dietPreference || "Not specified"}
+- Activity Level: ${activityLevel || "Not specified"}
 - Last meal: ${lastMeal}
 - Time: ${time}
 - Mood: ${mood || "Not specified"}
@@ -99,10 +106,10 @@ User context:
 - Calculated Health Score: ${healthScore} / 10
 
 Tasks:
-1. Suggest next meal
+1. Suggest next meal (Strictly align with Indian cuisines, using local ingredients and realistic Indian household dishes like Dal, Roti, Sabzi, Paneer, Chicken Tikka, Upma, Poha, etc. MUST respect the Dietary Preference)
 2. Explain WHY (based on health logic)
 3. Give a small habit improvement tip
-4. Provide a healthy "Swap Suggestion" ("Instead of X -> try Y")
+4. Provide a healthy "Swap Suggestion" ("Instead of X -> try Y" using Indian foods)
 
 Respond strictly in the following JSON format without any markdown wrappers or code block identifiers (just the raw JSON string):
 {
@@ -137,5 +144,5 @@ Respond strictly in the following JSON format without any markdown wrappers or c
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(\`Server is running on port \${PORT}\`);
+    console.log(`Server is running on port ${PORT}`);
 });
