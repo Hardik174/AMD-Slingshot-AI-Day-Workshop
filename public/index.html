@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Context-Aware Smart Food Coach</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-mesh"></div>
+    
+    <div class="container">
+        <header>
+            <h1>Smart Food Coach 🥑</h1>
+            <p>Your context-aware AI nutrition assistant</p>
+        </header>
+
+        <main>
+            <section class="card form-section">
+                <form id="coachForm">
+                    <div class="input-group">
+                        <label for="goal">Your Goal</label>
+                        <select id="goal" required>
+                            <option value="">Select a goal</option>
+                            <option value="Weight loss">Weight Loss</option>
+                            <option value="Muscle gain">Muscle Gain</option>
+                            <option value="Stay healthy">Maintain Fitness</option>
+                            <option value="Energy boost">Energy Boost</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="lastMeal">Last Meal You Ate</label>
+                        <input type="text" id="lastMeal" placeholder="e.g. 2 slices of pizza and soda" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="time">Time of Day</label>
+                        <input type="time" id="time" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="mood">Current Mood (Optional)</label>
+                        <select id="mood">
+                            <option value="">Select mood...</option>
+                            <option value="Energetic">Energetic</option>
+                            <option value="Stressed">Stressed</option>
+                            <option value="Tired">Tired</option>
+                            <option value="Happy">Happy</option>
+                            <option value="Anxious">Anxious</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" id="submitBtn">
+                        <span class="btn-text">Get Smart Advice</span>
+                        <span class="loader hidden"></span>
+                    </button>
+                </form>
+            </section>
+
+            <section class="card result-section hidden" id="resultCard">
+                <div class="score-badge" id="healthScoreBadge">
+                    <span id="healthScoreVal">8</span><span class="small-text">/10</span>
+                </div>
+                
+                <h2 id="suggestedMeal">Grilled Salmon & Quinoa</h2>
+                <div class="result-item">
+                    <h3>🧠 Why this fits your context</h3>
+                    <p id="reasonText">Because it is low in carbs and provides enough omega-3 to hit your macros.</p>
+                </div>
+                
+                <div class="result-item swap-suggestion">
+                    <h3>🔄 Smart Swap</h3>
+                    <p id="swapText">Instead of regular pasta -> try zucchini noodles.</p>
+                </div>
+                
+                <div class="result-item habit-tip">
+                    <h3>💡 Habit Tip</h3>
+                    <p id="tipText">Drink a glass of water before every meal.</p>
+                </div>
+                
+                <button class="reset-btn" id="resetBtn">Plan Another Meal</button>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
