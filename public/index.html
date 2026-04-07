@@ -8,102 +8,117 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="background-mesh"></div>
+    <div class="background-mesh" aria-hidden="true"></div>
     
-    <div class="container">
+    <main class="container" role="main">
         <header>
-            <h1>Smart Food Coach 🥑</h1>
+            <h1 id="app-title">Smart Food Coach 🥑</h1>
             <p>Your context-aware AI nutrition assistant</p>
         </header>
 
-        <main>
-            <section class="card form-section">
-                <form id="coachForm">
-                    <div class="input-group">
-                        <label for="goal">Your Goal</label>
-                        <select id="goal" required>
-                            <option value="">Select a goal</option>
-                            <option value="Weight loss">Weight Loss</option>
-                            <option value="Muscle gain">Muscle Gain</option>
-                            <option value="Stay healthy">Maintain Fitness</option>
-                            <option value="Energy boost">Energy Boost</option>
-                        </select>
-                    </div>
-
-                    <div class="input-group">
-                        <label for="lastMeal">Last Meal You Ate</label>
-                        <input type="text" id="lastMeal" placeholder="e.g. 2 slices of pizza and soda" required>
-                    </div>
-
-                    <div class="input-group">
-                        <label for="time">Time of Day</label>
-                        <input type="time" id="time" required>
-                    </div>
-
-                    <div class="input-group">
-                        <label for="mood">Current Mood (Optional)</label>
-                        <select id="mood">
-                            <option value="">Select mood...</option>
-                            <option value="Energetic">Energetic</option>
-                            <option value="Stressed">Stressed</option>
-                            <option value="Tired">Tired</option>
-                            <option value="Happy">Happy</option>
-                            <option value="Anxious">Anxious</option>
-                        </select>
-                    </div>
-
-                    <div class="input-group">
-                        <label for="dietPreference">Dietary Preference</label>
-                        <select id="dietPreference" required>
-                            <option value="">Select preference...</option>
-                            <option value="Vegetarian">Vegetarian (Veg)</option>
-                            <option value="Non-Vegetarian">Non-Vegetarian (Non-Veg)</option>
-                            <option value="Vegan">Vegan</option>
-                        </select>
-                    </div>
-
-                    <div class="input-group">
-                        <label for="activityLevel">Activity Level (Optional)</label>
-                        <select id="activityLevel">
-                            <option value="">Select activity level...</option>
-                            <option value="Sedentary">Sedentary (Desk Job, little exercise)</option>
-                            <option value="Active">Active (Workout 3-4 times/week)</option>
-                            <option value="Athlete">Athlete (Daily intense training)</option>
-                        </select>
-                    </div>
-
-                    <button type="submit" id="submitBtn">
-                        <span class="btn-text">Get Smart Advice</span>
-                        <span class="loader hidden"></span>
-                    </button>
-                </form>
-            </section>
-
-            <section class="card result-section hidden" id="resultCard">
-                <div class="score-badge" id="healthScoreBadge">
-                    <span id="healthScoreVal">8</span><span class="small-text">/10</span>
+        <section class="card form-section" aria-labelledby="app-title">
+            <form id="coachForm" aria-label="Nutrition Coaching Form">
+                <div class="input-group">
+                    <label for="goal">Your Physical Goal <span aria-hidden="true">*</span></label>
+                    <select id="goal" required aria-required="true">
+                        <option value="">Select a goal</option>
+                        <option value="Weight loss">Weight Loss</option>
+                        <option value="Muscle gain">Muscle Gain</option>
+                        <option value="Stay healthy">Maintain Fitness</option>
+                        <option value="Energy boost">Energy Boost</option>
+                    </select>
                 </div>
-                
-                <h2 id="suggestedMeal">Grilled Salmon & Quinoa</h2>
-                <div class="result-item">
-                    <h3>🧠 Why this fits your context</h3>
-                    <p id="reasonText">Because it is low in carbs and provides enough omega-3 to hit your macros.</p>
+
+                <div class="input-group">
+                    <label for="lastMeal">Last Meal You Ate <span aria-hidden="true">*</span></label>
+                    <input type="text" id="lastMeal" placeholder="e.g. 2 slices of pizza and a soda" required aria-required="true">
                 </div>
-                
-                <div class="result-item swap-suggestion">
-                    <h3>🔄 Smart Swap</h3>
-                    <p id="swapText">Instead of regular pasta -> try zucchini noodles.</p>
+
+                <div class="input-group">
+                    <label for="time">Time of Day <span aria-hidden="true">*</span></label>
+                    <input type="time" id="time" required aria-required="true">
                 </div>
-                
-                <div class="result-item habit-tip">
-                    <h3>💡 Habit Tip</h3>
-                    <p id="tipText">Drink a glass of water before every meal.</p>
+
+                <div class="input-group">
+                    <label for="mood">Current Mood (Optional)</label>
+                    <select id="mood">
+                        <option value="">Select mood...</option>
+                        <option value="Energetic">Energetic</option>
+                        <option value="Stressed">Stressed</option>
+                        <option value="Tired">Tired</option>
+                        <option value="Happy">Happy</option>
+                        <option value="Anxious">Anxious</option>
+                    </select>
                 </div>
-                
-                <button class="reset-btn" id="resetBtn">Plan Another Meal</button>
-            </section>
-        </main>
-    </div>
+
+                <div class="input-group">
+                    <label for="dietPreference">Dietary Preference <span aria-hidden="true">*</span></label>
+                    <select id="dietPreference" required aria-required="true">
+                        <option value="">Select preference...</option>
+                        <option value="Vegetarian">Vegetarian (Veg)</option>
+                        <option value="Non-Vegetarian">Non-Vegetarian (Non-Veg)</option>
+                        <option value="Vegan">Vegan</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="activityLevel">Activity Level (Optional)</label>
+                    <select id="activityLevel">
+                        <option value="">Select activity level...</option>
+                        <option value="Sedentary">Sedentary (Desk Job, little exercise)</option>
+                        <option value="Active">Active (Workout 3-4 times/week)</option>
+                        <option value="Athlete">Athlete (Daily intense training)</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="waterIntake">Daily Water Intake So Far <span aria-hidden="true">*</span></label>
+                    <select id="waterIntake" required aria-required="true">
+                        <option value="">Select fluid intake...</option>
+                        <option value="Less than 1 Liter">Less than 1 Liter (Feeling thirsty)</option>
+                        <option value="1-2 Liters">1 - 2 Liters (Moderate)</option>
+                        <option value="More than 2 Liters">More than 2 Liters (Well hydrated)</option>
+                    </select>
+                </div>
+
+                <button type="submit" id="submitBtn" aria-live="assertive">
+                    <span class="btn-text">Get Smart Advice</span>
+                    <span class="loader hidden" aria-hidden="true"></span>
+                </button>
+            </form>
+        </section>
+
+        <!-- Use aria-live polite so screen readers voice the result automatically when it unhides -->
+        <section class="card result-section hidden" id="resultCard" aria-live="polite">
+            <div class="score-badge" id="healthScoreBadge" aria-label="Health Score">
+                <span id="healthScoreVal"></span><span class="small-text">/10</span>
+            </div>
+            
+            <h2 id="suggestedMeal" tabindex="0"></h2>
+            
+            <div class="result-item" tabindex="0">
+                <h3>🧠 Why this fits your context</h3>
+                <p id="reasonText"></p>
+            </div>
+            
+            <div class="result-item swap-suggestion" tabindex="0">
+                <h3>🔄 Smart Swap</h3>
+                <p id="swapText"></p>
+            </div>
+            
+            <div class="result-item habit-tip" tabindex="0">
+                <h3>💡 Habit Tip</h3>
+                <p id="tipText"></p>
+            </div>
+
+            <div class="result-item hydration-warning" id="hydrationContainer" tabindex="0">
+                <h3>💧 Hydration Status</h3>
+                <p id="hydrationText"></p>
+            </div>
+            
+            <button class="reset-btn" id="resetBtn" aria-label="Plan Another Meal">Plan Another Meal</button>
+        </section>
+    </main>
 
     <script src="app.js"></script>
 </body>

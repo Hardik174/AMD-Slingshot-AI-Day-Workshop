@@ -13,22 +13,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const reasonText = document.getElementById('reasonText');
     const swapText = document.getElementById('swapText');
     const tipText = document.getElementById('tipText');
+    const hydrationText = document.getElementById('hydrationText');
+    const hydrationContainer = document.getElementById('hydrationContainer');
     const resetBtn = document.getElementById('resetBtn');
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        // Form Data
-        const goal = document.getElementById('goal').value;
-        const lastMeal = document.getElementById('lastMeal').value;
-        const time = document.getElementById('time').value;
-        const mood = document.getElementById('mood').value;
-        const dietPreference = document.getElementById('dietPreference').value;
-        const activityLevel = document.getElementById('activityLevel').value;
+        // Form Data Extraction mapping entirely to the new UI bounds
+        const payload = {
+            goal: document.getElementById('goal').value,
+            lastMeal: document.getElementById('lastMeal').value,
+            time: document.getElementById('time').value,
+            mood: document.getElementById('mood').value,
+            dietPreference: document.getElementById('dietPreference').value,
+            activityLevel: document.getElementById('activityLevel').value,
+            waterIntake: document.getElementById('waterIntake').value
+        };
 
-        // UI Loading State
+        // UI Loading State (Accessible loading indicator manipulation)
         btnText.classList.add('hidden');
         loader.classList.remove('hidden');
+        submitBtn.setAttribute('aria-busy', 'true');
         submitBtn.disabled = true;
 
         try {
@@ -37,23 +43,40 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ goal, lastMeal, time, mood, dietPreference, activityLevel })
+                body: JSON.stringify(payload)
             });
 
             if (!response.ok) {
-                throw new Error("Failed to fetch advice.");
+                // If the rate limit hits, it will throw a readable text body message
+                const errorCheck = await response.json().catch(() => null);
+                throw new Error(errorCheck?.error || "Failed to fetch AI coaching logic.");
             }
 
             const data = await response.json();
 
-            // Populate Results
+            // Populate the DOM synchronously
             healthScoreVal.textContent = data.healthScore;
             suggestedMeal.textContent = data.suggestedMeal;
             reasonText.textContent = data.reason;
             swapText.textContent = data.swapSuggestion;
             tipText.textContent = data.tip;
 
-            // Health badge styling based on score
+            // Conditional Hydration formatting
+            if(data.hydrationWarning) {
+                hydrationText.textContent = data.hydrationWarning;
+                hydrationContainer.style.display = "block";
+                
+                // Extra visual cue if it's a severe warning mapping to the 'low water' inputs
+                if(data.hydrationWarning.toLowerCase().includes("dehydrat") || payload.waterIntake.includes("Less than")) {
+                    hydrationContainer.style.borderLeft = "4px solid #ef4444";
+                } else {
+                    hydrationContainer.style.borderLeft = "4px solid #10b981";
+                }
+            } else {
+                hydrationContainer.style.display = "none";
+            }
+
+            // Health badge aesthetic styling mapping dynamically into the AI calculation
             if (data.healthScore >= 8) {
                 healthScoreBadge.style.background = 'linear-gradient(135deg, #10b981 0%, #3b82f6 100%)';
             } else if (data.healthScore >= 5) {
@@ -62,18 +85,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 healthScoreBadge.style.background = 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)';
             }
 
-            // Switch Views
+            // CSS view switching
             formSection.classList.add('hidden');
             resultCard.classList.remove('hidden');
 
+            // Force ARIA focus to title so screenreaders announce completion seamlessly
+            suggestedMeal.focus();
+
         } catch (error) {
-            console.error('Error:', error);
-            alert("Something went wrong! Please ensure the backend is running and the API key is configured.");
+            console.error('Core Logic Execution Error:', error);
+            alert(error.message || "Something went wrong! Please ensure the backend is running and the API key is valid.");
         } finally {
-            // Revert Loading State
+            // Revert State
             btnText.classList.remove('hidden');
             loader.classList.add('hidden');
             submitBtn.disabled = false;
+            submitBtn.removeAttribute('aria-busy');
         }
     });
 
